@@ -1,28 +1,20 @@
-from pydantic import BaseSettings
+from pydantic_settings import BaseSettings
 
 
-class DB(BaseSettings):
-
-    host: str
-    port: int
-    name: str
-    user: str
-    password: str
-
-
-class Api(BaseSettings):
-
-    secret: str
+class Storage(BaseSettings):
+    endpoint: str
+    region: str
+    access_key: str
+    secret_key: str
+    bucket_id: str
 
 
 class SettingsExtractor(BaseSettings):
-    DB__HOST: str
-    DB__PORT: int
-    DB__NAME: str
-    DB__USER: str
-    DB__PASSWORD: str
-
-    API__SECRET: str
+    ENDPOINT: str
+    REGION: str
+    ACCESS__KEY: str
+    SECRET__KEY: str
+    BUCKET__ID: str
 
     class Config:
         env_file = ".env"
@@ -30,22 +22,18 @@ class SettingsExtractor(BaseSettings):
 
 
 class Settings(BaseSettings):
-    db: DB
-    api: Api
+    storage: Storage
 
 
 def load_config() -> Settings:
     settings = SettingsExtractor()
 
     return Settings(
-        db=DB(
-            host=settings.DB__HOST,
-            port=settings.DB__PORT,
-            name=settings.DB__NAME,
-            user=settings.DB__USER,
-            password=settings.DB__PASSWORD,
+        storage=Storage(
+            endpoint=settings.ENDPOINT,
+            region=settings.REGION,
+            access_key=settings.ACCESS__KEY,
+            secret_key=settings.SECRET__KEY,
+            bucket_id=settings.BUCKET__ID,
         ),
-        api=Api(
-            secret=settings.API__SECRET
-        )
     )
